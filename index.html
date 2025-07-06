@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ประกาศผลรางวัล Lucky Draw</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif; /* ใช้ Inter font */
+      font-size: 28px; /* เพิ่มขนาดฟอนต์โดยรวม */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* จัดเนื้อหาให้อยู่ด้านบน */
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 960px;
+      text-align: center;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h2, h3 {
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 15px; /* เพิ่มระยะห่างด้านล่าง label */
+    }
+
+    input[type="text"] {
+      padding: 15px; /* เพิ่ม padding */
+      font-size: 24px; /* เพิ่มขนาดฟอนต์ใน input */
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 25px; /* เพิ่มระยะห่างด้านล่าง input */
+      width: calc(100% - 32px); /* ปรับสำหรับ padding และ border */
+      max-width: 350px; /* เพิ่ม max-width */
+      text-align: center;
+    }
+
+    button {
+      padding: 15px 30px; /* เพิ่ม padding */
+      font-size: 24px; /* เพิ่มขนาดฟอนต์ในปุ่ม */
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 8px; /* เพิ่ม margin */
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    #resultsTableContainer {
+      margin-top: 40px; /* เพิ่ม margin-top */
+      text-align: left;
+      padding: 0 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px; /* เพิ่ม margin-top */
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 15px; /* เพิ่ม padding */
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    /* Responsive table for smaller screens */
+    @media screen and (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+
+      tr {
+        margin: 0 0 1.5rem 0; /* เพิ่ม margin */
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+
+      td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 55%; /* เพิ่ม padding-left */
+        text-align: right;
+      }
+
+      td:before {
+        position: absolute;
+        top: 0;
+        left: 6px;
+        width: 50%; /* ปรับ width */
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+      }
+
+      td:nth-of-type(1):before { content: "E-TICKET ID"; }
+      td:nth-of-type(2):before { content: "ชื่อ-นามสกุล"; }
+      td:nth-of-type(3):before { content: "ร้านยา"; }
+      td:nth-of-type(4):before { content: "รางวัลที่ได้"; }
+      td:nth-of-type(5):before { content: "สถานะรับรางวัล"; }
+      /* td:nth-of-type(6):before { content: "รูปภาพยืนยัน"; } ลบออก */
+    }
+
+    /* Custom Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 99999; /* Even higher z-index */
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6); /* Slightly darker overlay */
+      justify-content: center;
+      align-items: center;
+      /* Ensure it's always visible when flex */
+      opacity: 1 !important; /* Force opacity */
+      visibility: visible !important; /* Force visibility */
+    }
+
+    .modal-content {
+      background-color: #fefefe; /* เปลี่ยนเป็นสีขาวปกติ */
+      border: 1px solid #888; /* เปลี่ยนเป็นขอบปกติ */
+      margin: auto;
+      padding: 30px; /* Ensure padding is applied */
+      box-sizing: border-box; /* Include padding in width/height calculations */
+      width: 80%; /* Allow width to be a percentage */
+      max-width: 500px;
+      height: auto; /* Let height adjust to content */
+      min-width: 300px;
+      min-height: 150px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      text-align: center;
+      position: relative;
+      overflow: auto; /* Add overflow auto */
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .modal-content p {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      width: 100%; /* Ensure buttons take full width */
+      box-sizing: border-box; /* Include padding in width/height calculations */
+    }
+
+    .modal-buttons button {
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal-buttons .confirm-btn {
+      background-color: #28a745;
+    }
+
+    .modal-buttons .confirm-btn:hover {
+      background-color: #218838;
+    }
+
+    .modal-buttons .cancel-btn {
+      background-color: #dc3545;
+    }
+
+    .modal-buttons .cancel-btn:hover {
+      background-color: #c82333;
+    }
+
+    .modal-close-btn {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .modal-close-btn:hover,
+    .modal-close-btn:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Loading Indicator (ยังคงอยู่แต่จะไม่มี Image Upload Section) */
+    #loadingIndicator {
+      display: none;
+      margin-top: 15px;
+      font-size: 18px;
+      color: #007bff;
+    }
+
+    /* ลบ .uploaded-image-display ออกทั้งหมด */
+    /*
+    .uploaded-image-display {
+        max-width: 150px;
+        max-height: 150px;
+        border-radius: 4px;
+        margin-top: 10px;
+        border: 1px solid #ddd;
+    }
+    */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>ตรวจสอบผลรางวัล Lucky Draw!</h2>
+    <h2>Annual Meeting</h2>
+
+    <label for="eticketIdInput">กรอก E-Ticket ID ของคุณ:</label>
+    <input type="text" id="eticketIdInput" placeholder="เช่น 001, 123">
+    <button onclick="checkPrize()">ตรวจสอบรางวัล</button>
+
+    <div id="resultsTableContainer">
+      <!-- ผลลัพธ์จะแสดงที่นี่ -->
+    </div>
+
+    <!-- ลบส่วนอัปโหลดรูปภาพออก -->
+    <!--
+    <div id="imageUploadSection">
+        <h3>อัปโหลดรูปภาพยืนยันการรับรางวัล</h3>
+        <input type="file" id="imageInput" accept="image/*">
+        <img id="imagePreview" src="#" alt="Image Preview">
+        <p id="loadingIndicator">กำลังอัปโหลดรูปภาพ...</p>
+    </div>
+    -->
+
+    <button id="confirmReceiptBtn" style="display:none;">ยืนยันการรับรางวัล</button> <!-- ลบ disabled ออก เพราะจะเปิดใช้งานเมื่อมีข้อมูล -->
+
+    <!-- Custom Modal for Alerts and Confirmations -->
+    <div id="customModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close-btn" onclick="closeModal()">&times;</span>
+        <h3 id="modalTitle"></h3>
+        <p id="modalMessage"></p>
+        <div id="modalButtons" class="modal-buttons">
+          <!-- Buttons will be injected here -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // URL ของ Google Apps Script Web App สำหรับดึงข้อมูลรางวัลเฉพาะบุคคล (doGet)
+      const getPrizeAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbxZ72hSxOHX5Bs3rdcc5NyQ6NKU0FHfg_tZUarR7xaxXtW56HrSQLFceslZnSZ1vFHihg/exec'; 
+
+      // URL ของ Google Apps Script Web App สำหรับยืนยันการรับรางวัล (doPost)
+      const confirmReceiptAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbwqedrda237VUvaroe_z1YapP7dAc85MHE04jyCdPn045VwcedE0PgsmBYY6bbKYxd2_w/exec'; 
+
+      // ตัวแปรสำหรับเก็บ E-Ticket ID ที่ถูกตรวจสอบและแสดงผลล่าสุด
+      let currentEticketId = null;
+
+      // --- Custom Modal Functions ---
+      let resolveModalPromise;
+
+      // showModal เป็นฟังก์ชันที่เราสร้างขึ้นเอง เพื่อควบคุมการแสดงผลของ div#customModal
+      function showModal(title, message, type = 'alert') {
+        console.log('showModal function started.'); 
+        const modal = document.getElementById('customModal');
+        const modalContent = document.querySelector('#customModal .modal-content'); 
+        
+        if (!modal) {
+            console.error('Error: Custom modal element not found!');
+            return;
+        }
+        console.log('Modal element found:', modal); // Log the modal element itself
+        console.log('Modal content element found:', modalContent); // Log the modal content element
+
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMessage').innerText = message;
+        const modalButtons = document.getElementById('modalButtons');
+        modalButtons.innerHTML = ''; // Clear previous buttons
+
+        if (type === 'alert') {
+          modalButtons.innerHTML = `<button class="confirm-btn" onclick="closeModal(true)">ตกลง</button>`;
+        } else if (type === 'confirm') {
+          modalButtons.innerHTML = `
+            <button class="confirm-btn" onclick="closeModal(true)">ยืนยัน</button>
+            <button class="cancel-btn" onclick="closeModal(false)">ยกเลิก</button>
+          `;
+          return new Promise(resolve => {
+            resolveModalPromise = resolve;
+          });
+        }
+        modal.style.display = 'flex'; // Use flex to center
+        modal.style.opacity = '1'; // Force opacity
+        modal.style.visibility = 'visible'; // Force visibility
+        console.log('Modal display set to:', modal.style.display); 
+        console.log('Modal opacity set to:', modal.style.opacity);
+        console.log('Modal visibility set to:', modal.style.visibility);
+        
+        console.log('Modal dimensions after setting display: Width =', modal.offsetWidth, 'px, Height =', modal.offsetHeight, 'px'); 
+        if (modalContent) { 
+            console.log('Modal content dimensions after setting display: Width =', modalContent.offsetWidth, 'px, Height =', modalContent.offsetHeight, 'px'); 
+        }
+      }
+
+      function closeModal(result = false) {
+        document.getElementById('customModal').style.display = 'none';
+        if (resolveModalPromise) {
+          resolveModalPromise(result);
+          resolveModalPromise = null;
+        }
+      }
+      // --- End Custom Modal Functions ---
+
+      // ลบ Event Listener สำหรับการเลือกรูปภาพออก
+      /*
+      document.getElementById('imageInput').addEventListener('change', function(event) {
+        const imagePreview = document.getElementById('imagePreview');
+        const confirmBtn = document.getElementById('confirmReceiptBtn');
+        if (event.target.files && event.target.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+            confirmBtn.disabled = false; // เปิดใช้งานปุ่มยืนยันเมื่อมีรูปภาพ
+          };
+          reader.readAsDataURL(event.target.files[0]);
+        } else {
+          imagePreview.style.display = 'none';
+          imagePreview.src = '#';
+          confirmBtn.disabled = true; // ปิดใช้งานปุ่มยืนยันถ้าไม่มีรูปภาพ
+        }
+      });
+      */
+
+      async function checkPrize() {
+        const eticketId = document.getElementById("eticketIdInput").value;
+        const resultsContainer = document.getElementById("resultsTableContainer");
+        const confirmBtn = document.getElementById('confirmReceiptBtn');
+
+        // รีเซ็ตสถานะก่อนตรวจสอบใหม่
+        confirmBtn.style.display = 'none';
+        confirmBtn.disabled = true;
+        currentEticketId = null; // รีเซ็ต currentEticketId
+
+        if (!eticketId || isNaN(parseInt(eticketId))) {
+          showModal("ข้อผิดพลาด", "กรุณากรอก E-Ticket ID ที่ถูกต้อง (ตัวเลขเท่านั้น)");
+          return;
+        }
+
+        resultsContainer.innerHTML = `<p>กำลังตรวจสอบรางวัลสำหรับ E-Ticket ID: ${eticketId}...</p>`;
+
+        try {
+          const response = await fetch(`${getPrizeAppsScriptUrl}?id=${eticketId}`, {
+            method: 'GET',
+            mode: 'cors'
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log('Participant details after fetch:', data.prizeDetails); // เพิ่ม log
+
+          if (data.status === "success" && data.prizeDetails) {
+            const p = data.prizeDetails;
+            currentEticketId = p.id; // เก็บ E-Ticket ID ที่ค้นหาสำเร็จ
+            console.log('currentEticketId set to:', currentEticketId); // เพิ่ม log
+
+            let displayReceiptStatus = '';
+            // ลบ imageDisplayHtml ออก
+            // let imageDisplayHtml = ''; 
+
+            // กำหนดสถานะการรับรางวัลที่จะแสดง
+            if (p.registrationStatus !== "Registered") {
+                displayReceiptStatus = 'ไม่ได้ลงทะเบียน';
+            } else if (!p.prize || p.prize.trim() === '') {
+                displayReceiptStatus = 'ยังไม่ได้รับรางวัล';
+            } else if (p.receiptStatus === 'รับรางวัลแล้ว') {
+                displayReceiptStatus = 'รับรางวัลแล้ว';
+                // ลบเงื่อนไขการแสดงรูปภาพออก
+                /*
+                if (p.imageUrl && p.imageUrl.trim() !== '') {
+                    imageDisplayHtml = `<img src="${p.imageUrl}" alt="รูปภาพยืนยันการรับรางวัล" class="uploaded-image-display">`;
+                }
+                */
+            } else {
+                displayReceiptStatus = 'ยังไม่ได้รับรางวัล';
+                // แสดงปุ่มยืนยันการรับรางวัล
+                confirmBtn.style.display = 'inline-block';
+                confirmBtn.disabled = false; // เปิดใช้งานปุ่ม
+            }
+            console.log('Condition for showing confirm button: p.registrationStatus =', p.registrationStatus, ', p.prize =', p.prize, ', p.receiptStatus =', p.receiptStatus); // เพิ่ม log
+            console.log('Confirm button display style:', confirmBtn.style.display); // เพิ่ม log
+
+
+            let tableHtml = `
+              <h3>ผลการตรวจสอบรางวัลสำหรับ E-Ticket ID: ${p.id}</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>E-TICKET ID</th>
+                    <th>ชื่อ-นามสกุล</th>
+                    <th>ร้านยา</th>
+                    <th>รางวัลที่ได้</th>
+                    <th>สถานะรับรางวัล</th>
+                    <!-- ลบหัวข้อรูปภาพยืนยันออก -->
+                    <!-- <th>รูปภาพยืนยัน</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>${p.id || '-'}</td>
+                    <td>${p.name || '-'}</td>
+                    <td>${p.shop || '-'}</td>
+                    <td>${p.prize || 'ไม่ได้รับรางวัล'}</td>
+                    <td>${displayReceiptStatus}</td>
+                    <!-- ลบเซลล์แสดงรูปภาพออก -->
+                    <!-- <td>${imageDisplayHtml}</td> -->
+                  </tr>
+                </tbody>
+              </table>
+            `;
+            resultsContainer.innerHTML = tableHtml;
+
+            // ผูก Event Listener กับปุ่มที่สร้างขึ้นมาใหม่ผ่าน Event Delegation
+            const confirmBtnElement = document.getElementById('confirmReceiptBtn'); 
+            if (confirmBtnElement) {
+                confirmBtnElement.removeEventListener('click', confirmPrizeReceipt); // ลบ listener เก่าก่อน
+                confirmBtnElement.addEventListener('click', confirmPrizeReceipt); // เพิ่ม listener ใหม่
+                console.log('Event listener attached to confirmReceiptBtn.'); 
+            } else {
+                console.warn('confirmBtn not found, cannot attach event listener.'); 
+            }
+
+          } else {
+            resultsContainer.innerHTML = `<p style="color: orange;">ไม่พบข้อมูลรางวัลสำหรับ E-Ticket ID: ${eticketId} หรือยังไม่ได้รับรางวัล</p>`;
+            console.warn("No prize data found or error:", data.message || "Unknown error");
+          }
+
+        } catch (error) {
+          console.error('Error fetching prize data:', error);
+          resultsContainer.innerHTML = `<p style="color: red;">เกิดข้อผิดพลาดในการดึงข้อมูลรางวัล: ${error.message}<br>โปรดตรวจสอบ E-Ticket ID และการเชื่อมต่อ</p>`;
+        }
+      }
+
+      async function confirmPrizeReceipt() {
+        console.log('confirmPrizeReceipt function started.'); 
+        // ใช้ currentEticketId ที่ถูกเก็บไว้
+        const eticketId = currentEticketId; 
+        console.log('Confirming for E-Ticket ID from temp:', eticketId); // เพิ่ม log
+
+        const resultsContainer = document.getElementById("resultsTableContainer");
+        const loadingIndicator = document.getElementById('loadingIndicator'); // ยังคงใช้ได้สำหรับแสดงสถานะ
+        const confirmBtn = document.getElementById('confirmReceiptBtn');
+
+        if (!eticketId) { // ตรวจสอบ currentEticketId แทน
+          showModal("ข้อผิดพลาด", "ไม่พบ E-Ticket ID ที่จะยืนยัน กรุณาตรวจสอบรางวัลอีกครั้ง");
+          return;
+        }
+        
+        resultsContainer.innerHTML = `<p>กำลังบันทึกข้อมูลการรับรางวัลสำหรับ E-Ticket ID: ${eticketId}...</p>`;
+
+        loadingIndicator.style.display = 'block'; 
+        confirmBtn.disabled = true; 
+
+        try {
+            console.log('Sending data to Apps Script...');
+            const response = await fetch(confirmReceiptAppsScriptUrl, {
+                method: 'POST',
+                mode: 'cors', // เปลี่ยนเป็น 'cors' เพื่อให้สามารถอ่าน response ได้
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    eticketId: eticketId // ส่งแค่ E-Ticket ID
+                }),
+            });
+
+            loadingIndicator.style.display = 'none'; 
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            }
+
+            const result = await response.json(); 
+            console.log('Apps Script Response:', result);
+
+            if (result.status === "success") {
+                showModal("สำเร็จ", "บันทึกข้อมูลการรับรางวัลแล้ว! โปรดตรวจสอบสถานะอีกครั้ง"); // เปลี่ยนข้อความ
+            } else {
+                showModal("ข้อผิดพลาด", `เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${result.message}`); // เปลี่ยนข้อความ
+            }
+            
+            await checkPrize(); // ตรวจสอบสถานะอีกครั้งหลังบันทึก
+        } catch (fetchError) { 
+            loadingIndicator.style.display = 'none';
+            confirmBtn.disabled = false;
+            console.error('Error during fetch operation:', fetchError);
+            showModal("ข้อผิดพลาด", 'เกิดข้อผิดพลาดในการเชื่อมต่อหรือส่งข้อมูล: ' + fetchError.message + '\nโปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและส่วนขยายเบราว์เซอร์');
+            await checkPrize();
+        }
+      }
+    </script>
+  </div>
+</body>
+</html>
