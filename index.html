@@ -2,15 +2,14 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ประกาศผลรางวัล Lucky Draw</title>
+  <title>ระบบสุ่มรางวัล Lucky Draw</title>
   <style>
     body {
-      font-family: 'Inter', sans-serif; /* ใช้ Inter font */
-      font-size: 28px; /* เพิ่มขนาดฟอนต์โดยรวม */
+      font-family: sans-serif;
+      font-size: 26px;
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* จัดเนื้อหาให้อยู่ด้านบน */
+      align-items: flex-start;
       min-height: 100vh;
       margin: 0;
       padding: 20px;
@@ -34,29 +33,29 @@
 
     label {
       display: block;
-      margin-bottom: 15px; /* เพิ่มระยะห่างด้านล่าง label */
+      margin-bottom: 10px;
     }
 
-    input[type="text"] {
-      padding: 15px; /* เพิ่ม padding */
-      font-size: 24px; /* เพิ่มขนาดฟอนต์ใน input */
+    input[type="number"] {
+      padding: 10px;
+      font-size: 20px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      margin-bottom: 25px; /* เพิ่มระยะห่างด้านล่าง input */
-      width: calc(100% - 32px); /* ปรับสำหรับ padding และ border */
-      max-width: 350px; /* เพิ่ม max-width */
+      margin-bottom: 20px;
+      width: calc(100% - 22px);
+      max-width: 300px;
       text-align: center;
     }
 
     button {
-      padding: 15px 30px; /* เพิ่ม padding */
-      font-size: 24px; /* เพิ่มขนาดฟอนต์ในปุ่ม */
+      padding: 12px 25px;
+      font-size: 20px;
       background-color: #007bff;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      margin: 8px; /* เพิ่ม margin */
+      margin: 5px;
       transition: background-color 0.3s ease;
     }
 
@@ -64,335 +63,86 @@
       background-color: #0056b3;
     }
 
-    button:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
-    }
-
-    #resultsTableContainer {
-      margin-top: 40px; /* เพิ่ม margin-top */
+    #prizeList, #results, #nonRegisteredList {
+      margin-top: 20px;
       text-align: left;
       padding: 0 20px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 5px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px; /* เพิ่ม margin-top */
+      margin-top: 15px;
     }
 
     th, td {
       border: 1px solid #ddd;
-      padding: 15px; /* เพิ่ม padding */
+      padding: 8px;
       text-align: left;
     }
 
     th {
       background-color: #f2f2f2;
-      font-weight: bold;
     }
-
-    /* Responsive table for smaller screens */
-    @media screen and (max-width: 600px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-
-      thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-      }
-
-      tr {
-        margin: 0 0 1.5rem 0; /* เพิ่ม margin */
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      }
-
-      td {
-        border: none;
-        border-bottom: 1px solid #eee;
-        position: relative;
-        padding-left: 55%; /* เพิ่ม padding-left */
-        text-align: right;
-      }
-
-      td:before {
-        position: absolute;
-        top: 0;
-        left: 6px;
-        width: 50%; /* ปรับ width */
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: bold;
-      }
-
-      td:nth-of-type(1):before { content: "E-TICKET ID"; }
-      td:nth-of-type(2):before { content: "ชื่อ-นามสกุล"; }
-      td:nth-of-type(3):before { content: "ร้านยา"; }
-      td:nth-of-type(4):before { content: "รางวัลที่ได้"; }
-      td:nth-of-type(5):before { content: "สถานะรับรางวัล"; }
-      /* td:nth-of-type(6):before { content: "รูปภาพยืนยัน"; } ลบออก */
-    }
-
-    /* Custom Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 99999; /* Even higher z-index */
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.6); /* Slightly darker overlay */
-      justify-content: center;
-      align-items: center;
-      /* Ensure it's always visible when flex */
-      opacity: 1 !important; /* Force opacity */
-      visibility: visible !important; /* Force visibility */
-    }
-
-    .modal-content {
-      background-color: #fefefe; /* เปลี่ยนเป็นสีขาวปกติ */
-      border: 1px solid #888; /* เปลี่ยนเป็นขอบปกติ */
-      margin: auto;
-      padding: 30px; /* Ensure padding is applied */
-      box-sizing: border-box; /* Include padding in width/height calculations */
-      width: 80%; /* Allow width to be a percentage */
-      max-width: 500px;
-      height: auto; /* Let height adjust to content */
-      min-width: 300px;
-      min-height: 150px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      text-align: center;
-      position: relative;
-      overflow: auto; /* Add overflow auto */
-    }
-
-    .modal-content h3 {
-      margin-top: 0;
-      color: #333;
-    }
-
-    .modal-content p {
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
-
-    .modal-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      width: 100%; /* Ensure buttons take full width */
-      box-sizing: border-box; /* Include padding in width/height calculations */
-    }
-
-    .modal-buttons button {
-      padding: 10px 20px;
-      font-size: 18px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .modal-buttons .confirm-btn {
-      background-color: #28a745;
-    }
-
-    .modal-buttons .confirm-btn:hover {
-      background-color: #218838;
-    }
-
-    .modal-buttons .cancel-btn {
-      background-color: #dc3545;
-    }
-
-    .modal-buttons .cancel-btn:hover {
-      background-color: #c82333;
-    }
-
-    .modal-close-btn {
-      color: #aaa;
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .modal-close-btn:hover,
-    .modal-close-btn:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    /* Loading Indicator (ยังคงอยู่แต่จะไม่มี Image Upload Section) */
-    #loadingIndicator {
-      display: none;
-      margin-top: 15px;
-      font-size: 18px;
-      color: #007bff;
-    }
-
-    /* ลบ .uploaded-image-display ออกทั้งหมด */
-    /*
-    .uploaded-image-display {
-        max-width: 150px;
-        max-height: 150px;
-        border-radius: 4px;
-        margin-top: 10px;
-        border: 1px solid #ddd;
-    }
-    */
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>ตรวจสอบผลรางวัล Lucky Draw!</h2>
-    <h2>Annual Meeting</h2>
+    <h2>ระบบสุ่มรางวัล Lucky Draw!</h2>
+     <h2>Annual Meeting</h2>
 
-    <label for="eticketIdInput">กรอก E-Ticket ID ของคุณ:</label>
-    <input type="text" id="eticketIdInput" placeholder="เช่น 001, 123">
-    <button onclick="checkPrize()">ตรวจสอบรางวัล</button>
+    <button onclick="generatePrizes()">โหลดข้อมูลผู้เข้าร่วม & แสดงรายการรางวัล</button>
 
-    <div id="resultsTableContainer">
-      <!-- ผลลัพธ์จะแสดงที่นี่ -->
-    </div>
+    <div id="prizeList"></div>
 
-    <!-- ลบส่วนอัปโหลดรูปภาพออก -->
-    <!--
-    <div id="imageUploadSection">
-        <h3>อัปโหลดรูปภาพยืนยันการรับรางวัล</h3>
-        <input type="file" id="imageInput" accept="image/*">
-        <img id="imagePreview" src="#" alt="Image Preview">
-        <p id="loadingIndicator">กำลังอัปโหลดรูปภาพ...</p>
-    </div>
-    -->
+    <button onclick="drawPrizes()" style="display:none;" id="drawBtn">สุ่มรางวัล</button>
+    <div id="results"></div>
 
-    <button id="confirmReceiptBtn" style="display:none;">ยืนยันการรับรางวัล</button> <!-- ลบ disabled ออก เพราะจะเปิดใช้งานเมื่อมีข้อมูล -->
+    <button onclick="sendToGoogleSheet()" style="display:none;" id="sendToSheetBtn">ส่งผลรางวัลไป Google Sheet</button>
 
-    <!-- Custom Modal for Alerts and Confirmations -->
-    <div id="customModal" class="modal">
-      <div class="modal-content">
-        <span class="modal-close-btn" onclick="closeModal()">&times;</span>
-        <h3 id="modalTitle"></h3>
-        <p id="modalMessage"></p>
-        <div id="modalButtons" class="modal-buttons">
-          <!-- Buttons will be injected here -->
-        </div>
-      </div>
-    </div>
+    <div id="nonRegisteredList"></div>
 
     <script>
-      // URL ของ Google Apps Script Web App สำหรับดึงข้อมูลรางวัลเฉพาะบุคคล (doGet)
+      const prizes = [
+        { set: 1, name: "ถุงหิ้วขาว", amount: 30 },
+        { set: 2, name: "ร่ม", amount: 60 },
+        { set: 3, name: "กระเป๋าเก็บสายชาร์จ", amount: 30 },
+        { set: 4, name: "ลิ้นชักเล็ก", amount: 30 },
+        { set: 5, name: "หมอนงีบ", amount: 30 },
+        { set: 6, name: "พรมเช็ดเท้า", amount: 30 },
+        { set: 7, name: "ตะกร้ากระจูด", amount: 30 },
+        { set: 8, name: "ผ้าขนหนู", amount: 30 },
+        { set: 9, name: "แก้วน้ำ", amount: "remaining" }
+      ];
+
+      let registeredParticipantsForDraw = []; // E-Ticket IDs สำหรับการสุ่มรางวัล
+      let allParticipantDetails = []; // รายละเอียดผู้เข้าร่วมทั้งหมด (รวมทั้ง Registered และ Non-Registered)
+      let drawResults = []; // ผลการสุ่มรางวัล
+
+       // URL ของ Google Apps Script Web App สำหรับดึงข้อมูลรางวัลเฉพาะบุคคล (doGet)
       const getPrizeAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbxZ72hSxOHX5Bs3rdcc5NyQ6NKU0FHfg_tZUarR7xaxXtW56HrSQLFceslZnSZ1vFHihg/exec'; 
 
       // URL ของ Google Apps Script Web App สำหรับยืนยันการรับรางวัล (doPost)
       const confirmReceiptAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbwqedrda237VUvaroe_z1YapP7dAc85MHE04jyCdPn045VwcedE0PgsmBYY6bbKYxd2_w/exec'; 
 
-      // ตัวแปรสำหรับเก็บ E-Ticket ID ที่ถูกตรวจสอบและแสดงผลล่าสุด
-      let currentEticketId = null;
-
-      // --- Custom Modal Functions ---
-      let resolveModalPromise;
-
-      // showModal เป็นฟังก์ชันที่เราสร้างขึ้นเอง เพื่อควบคุมการแสดงผลของ div#customModal
-      function showModal(title, message, type = 'alert') {
-        console.log('showModal function started.'); 
-        const modal = document.getElementById('customModal');
-        const modalContent = document.querySelector('#customModal .modal-content'); 
-        
-        if (!modal) {
-            console.error('Error: Custom modal element not found!');
-            return;
-        }
-        console.log('Modal element found:', modal); // Log the modal element itself
-        console.log('Modal content element found:', modalContent); // Log the modal content element
-
-        document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalMessage').innerText = message;
-        const modalButtons = document.getElementById('modalButtons');
-        modalButtons.innerHTML = ''; // Clear previous buttons
-
-        if (type === 'alert') {
-          modalButtons.innerHTML = `<button class="confirm-btn" onclick="closeModal(true)">ตกลง</button>`;
-        } else if (type === 'confirm') {
-          modalButtons.innerHTML = `
-            <button class="confirm-btn" onclick="closeModal(true)">ยืนยัน</button>
-            <button class="cancel-btn" onclick="closeModal(false)">ยกเลิก</button>
-          `;
-          return new Promise(resolve => {
-            resolveModalPromise = resolve;
-          });
-        }
-        modal.style.display = 'flex'; // Use flex to center
-        modal.style.opacity = '1'; // Force opacity
-        modal.style.visibility = 'visible'; // Force visibility
-        console.log('Modal display set to:', modal.style.display); 
-        console.log('Modal opacity set to:', modal.style.opacity);
-        console.log('Modal visibility set to:', modal.style.visibility);
-        
-        console.log('Modal dimensions after setting display: Width =', modal.offsetWidth, 'px, Height =', modal.offsetHeight, 'px'); 
-        if (modalContent) { 
-            console.log('Modal content dimensions after setting display: Width =', modalContent.offsetWidth, 'px, Height =', modalContent.offsetHeight, 'px'); 
-        }
-      }
-
-      function closeModal(result = false) {
-        document.getElementById('customModal').style.display = 'none';
-        if (resolveModalPromise) {
-          resolveModalPromise(result);
-          resolveModalPromise = null;
-        }
-      }
-      // --- End Custom Modal Functions ---
-
-      // ลบ Event Listener สำหรับการเลือกรูปภาพออก
-      /*
-      document.getElementById('imageInput').addEventListener('change', function(event) {
-        const imagePreview = document.getElementById('imagePreview');
-        const confirmBtn = document.getElementById('confirmReceiptBtn');
-        if (event.target.files && event.target.files[0]) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            imagePreview.src = e.target.result;
-            imagePreview.style.display = 'block';
-            confirmBtn.disabled = false; // เปิดใช้งานปุ่มยืนยันเมื่อมีรูปภาพ
-          };
-          reader.readAsDataURL(event.target.files[0]);
-        } else {
-          imagePreview.style.display = 'none';
-          imagePreview.src = '#';
-          confirmBtn.disabled = true; // ปิดใช้งานปุ่มยืนยันถ้าไม่มีรูปภาพ
-        }
-      });
-      */
-
-      async function checkPrize() {
-        const eticketId = document.getElementById("eticketIdInput").value;
-        const resultsContainer = document.getElementById("resultsTableContainer");
-        const confirmBtn = document.getElementById('confirmReceiptBtn');
-
-        // รีเซ็ตสถานะก่อนตรวจสอบใหม่
-        confirmBtn.style.display = 'none';
-        confirmBtn.disabled = true;
-        currentEticketId = null; // รีเซ็ต currentEticketId
-
-        if (!eticketId || isNaN(parseInt(eticketId))) {
-          showModal("ข้อผิดพลาด", "กรุณากรอก E-Ticket ID ที่ถูกต้อง (ตัวเลขเท่านั้น)");
-          return;
-        }
-
-        resultsContainer.innerHTML = `<p>กำลังตรวจสอบรางวัลสำหรับ E-Ticket ID: ${eticketId}...</p>`;
-
+      async function generatePrizes() {
+        // --- ขั้นตอนที่ 1: ดึงข้อมูลผู้เข้าร่วมจาก Google Sheet ---
         try {
-          const response = await fetch(`${getPrizeAppsScriptUrl}?id=${eticketId}`, {
+          document.getElementById("prizeList").innerHTML = `<p>กำลังโหลดข้อมูลผู้เข้าร่วมงานจาก Google Sheet...</p>`;
+          document.getElementById("drawBtn").style.display = "none";
+          document.getElementById("sendToSheetBtn").style.display = "none";
+          document.getElementById("nonRegisteredList").innerHTML = ''; // Clear previous non-registered list
+
+          const response = await fetch(getParticipantsAppsScriptUrl, {
             method: 'GET',
             mode: 'cors'
           });
@@ -402,149 +152,133 @@
           }
 
           const data = await response.json();
-          console.log('Participant details after fetch:', data.prizeDetails); // เพิ่ม log
+          if (data.status === "success" && data.allParticipants && data.allParticipants.length > 0) {
+            allParticipantDetails = data.allParticipants; // เก็บรายละเอียดทั้งหมด
+            
+            // กรองเฉพาะผู้ที่ Registered สำหรับการสุ่มรางวัล
+            registeredParticipantsForDraw = allParticipantDetails
+              .filter(p => p.status === "Registered" && !isNaN(parseInt(p.id)))
+              .map(p => parseInt(p.id));
 
-          if (data.status === "success" && data.prizeDetails) {
-            const p = data.prizeDetails;
-            currentEticketId = p.id; // เก็บ E-Ticket ID ที่ค้นหาสำเร็จ
-            console.log('currentEticketId set to:', currentEticketId); // เพิ่ม log
-
-            let displayReceiptStatus = '';
-            // ลบ imageDisplayHtml ออก
-            // let imageDisplayHtml = ''; 
-
-            // กำหนดสถานะการรับรางวัลที่จะแสดง
-            if (p.registrationStatus !== "Registered") {
-                displayReceiptStatus = 'ไม่ได้ลงทะเบียน';
-            } else if (!p.prize || p.prize.trim() === '') {
-                displayReceiptStatus = 'ยังไม่ได้รับรางวัล';
-            } else if (p.receiptStatus === 'รับรางวัลแล้ว') {
-                displayReceiptStatus = 'รับรางวัลแล้ว';
-                // ลบเงื่อนไขการแสดงรูปภาพออก
-                /*
-                if (p.imageUrl && p.imageUrl.trim() !== '') {
-                    imageDisplayHtml = `<img src="${p.imageUrl}" alt="รูปภาพยืนยันการรับรางวัล" class="uploaded-image-display">`;
-                }
-                */
-            } else {
-                displayReceiptStatus = 'ยังไม่ได้รับรางวัล';
-                // แสดงปุ่มยืนยันการรับรางวัล
-                confirmBtn.style.display = 'inline-block';
-                confirmBtn.disabled = false; // เปิดใช้งานปุ่ม
-            }
-            console.log('Condition for showing confirm button: p.registrationStatus =', p.registrationStatus, ', p.prize =', p.prize, ', p.receiptStatus =', p.receiptStatus); // เพิ่ม log
-            console.log('Confirm button display style:', confirmBtn.style.display); // เพิ่ม log
-
-
-            let tableHtml = `
-              <h3>ผลการตรวจสอบรางวัลสำหรับ E-Ticket ID: ${p.id}</h3>
-              <table>
-                <thead>
-                  <tr>
-                    <th>E-TICKET ID</th>
-                    <th>ชื่อ-นามสกุล</th>
-                    <th>ร้านยา</th>
-                    <th>รางวัลที่ได้</th>
-                    <th>สถานะรับรางวัล</th>
-                    <!-- ลบหัวข้อรูปภาพยืนยันออก -->
-                    <!-- <th>รูปภาพยืนยัน</th> -->
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>${p.id || '-'}</td>
-                    <td>${p.name || '-'}</td>
-                    <td>${p.shop || '-'}</td>
-                    <td>${p.prize || 'ไม่ได้รับรางวัล'}</td>
-                    <td>${displayReceiptStatus}</td>
-                    <!-- ลบเซลล์แสดงรูปภาพออก -->
-                    <!-- <td>${imageDisplayHtml}</td> -->
-                  </tr>
-                </tbody>
-              </table>
-            `;
-            resultsContainer.innerHTML = tableHtml;
-
-            // ผูก Event Listener กับปุ่มที่สร้างขึ้นมาใหม่ผ่าน Event Delegation
-            const confirmBtnElement = document.getElementById('confirmReceiptBtn'); 
-            if (confirmBtnElement) {
-                confirmBtnElement.removeEventListener('click', confirmPrizeReceipt); // ลบ listener เก่าก่อน
-                confirmBtnElement.addEventListener('click', confirmPrizeReceipt); // เพิ่ม listener ใหม่
-                console.log('Event listener attached to confirmReceiptBtn.'); 
-            } else {
-                console.warn('confirmBtn not found, cannot attach event listener.'); 
-            }
+            // แสดงรายการผู้ไม่เข้าร่วมงาน
+            displayNonRegisteredParticipants();
 
           } else {
-            resultsContainer.innerHTML = `<p style="color: orange;">ไม่พบข้อมูลรางวัลสำหรับ E-Ticket ID: ${eticketId} หรือยังไม่ได้รับรางวัล</p>`;
-            console.warn("No prize data found or error:", data.message || "Unknown error");
+            alert("ไม่พบข้อมูลผู้เข้าร่วมงานที่ลงทะเบียน หรือเกิดข้อผิดพลาดในการดึงข้อมูล.");
+            console.error("Error fetching participants:", data.message || "Unknown error");
+            document.getElementById("prizeList").innerHTML = `<p style="color: red;">ไม่สามารถโหลดข้อมูลผู้เข้าร่วมงานได้.</p>`;
+            return;
           }
 
         } catch (error) {
-          console.error('Error fetching prize data:', error);
-          resultsContainer.innerHTML = `<p style="color: red;">เกิดข้อผิดพลาดในการดึงข้อมูลรางวัล: ${error.message}<br>โปรดตรวจสอบ E-Ticket ID และการเชื่อมต่อ</p>`;
-        }
-      }
-
-      async function confirmPrizeReceipt() {
-        console.log('confirmPrizeReceipt function started.'); 
-        // ใช้ currentEticketId ที่ถูกเก็บไว้
-        const eticketId = currentEticketId; 
-        console.log('Confirming for E-Ticket ID from temp:', eticketId); // เพิ่ม log
-
-        const resultsContainer = document.getElementById("resultsTableContainer");
-        const loadingIndicator = document.getElementById('loadingIndicator'); // ยังคงใช้ได้สำหรับแสดงสถานะ
-        const confirmBtn = document.getElementById('confirmReceiptBtn');
-
-        if (!eticketId) { // ตรวจสอบ currentEticketId แทน
-          showModal("ข้อผิดพลาด", "ไม่พบ E-Ticket ID ที่จะยืนยัน กรุณาตรวจสอบรางวัลอีกครั้ง");
+          alert("ไม่สามารถดึงข้อมูลผู้เข้าร่วมงานได้: " + error.message + "\nโปรดตรวจสอบ URL ของ Apps Script และการตั้งค่า");
+          console.error("Fetch error for participants:", error);
+          document.getElementById("prizeList").innerHTML = `<p style="color: red;">เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google Sheet.</p>`;
           return;
         }
-        
-        resultsContainer.innerHTML = `<p>กำลังบันทึกข้อมูลการรับรางวัลสำหรับ E-Ticket ID: ${eticketId}...</p>`;
 
-        loadingIndicator.style.display = 'block'; 
-        confirmBtn.disabled = true; 
+        // --- ขั้นตอนที่ 2: คำนวณและแสดงรางวัลตามจำนวนผู้เข้าร่วมที่ดึงมา ---
+        const totalRegistered = registeredParticipantsForDraw.length;
+        if (totalRegistered <= 0) {
+          alert("ไม่พบผู้เข้าร่วมงานที่ลงทะเบียนใน Google Sheet 'List' คอลัมน์ E");
+          document.getElementById("prizeList").innerHTML = `<p style="color: red;">ไม่พบผู้เข้าร่วมงานที่ลงทะเบียน.</p>`;
+          return;
+        }
+
+        let used = prizes.slice(0, 8).reduce((sum, p) => sum + p.amount, 0);
+        prizes[8].amount = Math.max(0, totalRegistered - used); 
+
+        let html = `<h3>รายการของรางวัล (จากผู้เข้าร่วมที่ลงทะเบียน ${totalRegistered} คน):</h3><ul>`;
+        prizes.forEach(p => {
+          html += `<li>ชุดที่ ${p.set} - ${p.name} จำนวน: ${p.amount} รางวัล</li>`;
+        });
+        html += `</ul>`;
+        document.getElementById("prizeList").innerHTML = html;
+        document.getElementById("drawBtn").style.display = "inline-block";
+        document.getElementById("sendToSheetBtn").style.display = "none";
+      }
+
+      function drawPrizes() {
+        if (registeredParticipantsForDraw.length === 0) {
+          alert("กรุณา 'โหลดข้อมูลผู้เข้าร่วม' ก่อนทำการสุ่มรางวัล");
+          return;
+        }
+
+        let pool = [...registeredParticipantsForDraw]; 
+        drawResults = [];
+
+        let html = `<h3>ผลการสุ่มรางวัล:</h3>`;
+        prizes.forEach(p => {
+          let selected = [];
+          for (let i = 0; i < p.amount; i++) {
+            if (pool.length === 0) {
+              console.warn(`ไม่เหลือผู้เข้าร่วมเพียงพอที่จะสุ่มรางวัล ${p.name} ทั้งหมด.`);
+              break;
+            }
+            const index = Math.floor(Math.random() * pool.length);
+            selected.push(pool.splice(index, 1)[0]);
+          }
+          drawResults.push({ set: p.set, name: p.name, winners: selected });
+          html += `<b>ชุดที่ ${p.set} - ${p.name}:</b> ${selected.join(", ")}<br>`;
+        });
+
+        document.getElementById("results").innerHTML = html;
+        document.getElementById("sendToSheetBtn").style.display = "inline-block";
+      }
+
+      async function sendToGoogleSheet() {
+        if (drawResults.length === 0) {
+          alert("กรุณาสุ่มรางวัลก่อนส่งข้อมูลไป Google Sheet");
+          return;
+        }
+
+        let updatesToSend = [];
+        drawResults.forEach(prizeSet => {
+          prizeSet.winners.forEach(winnerId => {
+            // ส่ง E-Ticket ID และเลขชุดรางวัล
+            updatesToSend.push({ eticketId: winnerId, prizeSet: prizeSet.set });
+          });
+        });
 
         try {
-            console.log('Sending data to Apps Script...');
-            const response = await fetch(confirmReceiptAppsScriptUrl, {
-                method: 'POST',
-                mode: 'cors', // เปลี่ยนเป็น 'cors' เพื่อให้สามารถอ่าน response ได้
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    eticketId: eticketId // ส่งแค่ E-Ticket ID
-                }),
-            });
+          const response = await fetch(updatePrizeResultsAppsScriptUrl, {
+            method: 'POST',
+            mode: 'no-cors', // ใช้ 'no-cors' หากไม่ต้องการอ่านการตอบกลับโดยตรงจาก Apps Script
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ updates: updatesToSend }),
+          });
 
-            loadingIndicator.style.display = 'none'; 
+          // เนื่องจากใช้ 'no-cors' จึงไม่สามารถตรวจสอบ response.ok ได้โดยตรง
+          // แต่เราสามารถสันนิษฐานว่าสำเร็จหากไม่มีข้อผิดพลาดเครือข่าย
+          console.log('ข้อมูลถูกส่งไปยัง Google Sheet handler แล้ว โปรดตรวจสอบ Google Sheet ของคุณสำหรับการอัปเดต.');
+          alert('ส่งผลรางวัลไป Google Sheet แล้ว (โปรดตรวจสอบผลลัพธ์ใน Google Sheet)');
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-            }
-
-            const result = await response.json(); 
-            console.log('Apps Script Response:', result);
-
-            if (result.status === "success") {
-                showModal("สำเร็จ", "บันทึกข้อมูลการรับรางวัลแล้ว! โปรดตรวจสอบสถานะอีกครั้ง"); // เปลี่ยนข้อความ
-            } else {
-                showModal("ข้อผิดพลาด", `เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${result.message}`); // เปลี่ยนข้อความ
-            }
-            
-            await checkPrize(); // ตรวจสอบสถานะอีกครั้งหลังบันทึก
-        } catch (fetchError) { 
-            loadingIndicator.style.display = 'none';
-            confirmBtn.disabled = false;
-            console.error('Error during fetch operation:', fetchError);
-            showModal("ข้อผิดพลาด", 'เกิดข้อผิดพลาดในการเชื่อมต่อหรือส่งข้อมูล: ' + fetchError.message + '\nโปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและส่วนขยายเบราว์เซอร์');
-            await checkPrize();
+        } catch (error) {
+          console.error('เกิดข้อผิดพลาดในการส่งข้อมูลไป Google Sheet:', error);
+          alert('เกิดข้อผิดพลาดในการส่งข้อมูลไป Google Sheet: ' + error.message + '\nโปรดตรวจสอบ URL และการตั้งค่า Apps Script');
         }
       }
-    </script>
-  </div>
-</body>
-</html>
+
+      function displayNonRegisteredParticipants() {
+        const nonRegistered = allParticipantDetails.filter(p => p.status !== "Registered");
+
+        let html = `<h3>ผู้เข้าร่วมที่ไม่ได้ลงทะเบียน:</h3>`;
+        if (nonRegistered.length > 0) {
+          html += `<table>
+                    <thead>
+                      <tr>
+                        <th>E-TICKET ID</th>
+                        <th>ชื่อ-สกุล</th>
+                        <th>ชื่อร้าน</th>
+                      </tr>
+                    </thead>
+                    <tbody>`;
+          nonRegistered.forEach(p => {
+            html += `<tr>
+                      <td>${p.id || '-'}</td>
+                      <td>${p.name || '-'}</td>
+                      <td>${p.shop || '-'}</td>
+                    </tr>`;
+          });
